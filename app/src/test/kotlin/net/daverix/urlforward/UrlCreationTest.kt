@@ -47,7 +47,8 @@ class UrlCreationTest {
             created = 0,
             updated = 1,
             textPattern = "https://example.com/([a-z]+)",
-            subjectPattern = ".*"
+            subjectPattern = ".*",
+            regexPattern = ""
         )
 
         val actual = createUrl(filter, "https://example.com/abc", null)
@@ -66,7 +67,8 @@ class UrlCreationTest {
             created = 0,
             updated = 1,
             textPattern = "https://example.com/([a-z]+)",
-            subjectPattern = ".*\\s([a-z0-9]+)!"
+            subjectPattern = ".*\\s([a-z0-9]+)!",
+            regexPattern = ""
         )
 
         val actual = createUrl(filter, "https://example.com/abc", "Thank you, your code is def123!")
@@ -85,7 +87,8 @@ class UrlCreationTest {
             created = 0,
             updated = 1,
             textPattern = "non-matching-pattern",
-            subjectPattern = ".*"
+            subjectPattern = ".*",
+            regexPattern = ""
         )
 
         val actual = createUrl(filter, "https://example.com/abc", null)

@@ -1,0 +1,26 @@
+when:
+  event: tag
+
+steps:
+  build-release:
+    image: thyrlian/android-sdk:latest
+    commands:
+      - yes | sdkmanager --licenses || true
+      - sdkmanager "build-tools;36.0.0" "platforms;android-36"
+      - chmod +x gradlew
+      - ./gradlew assembleRelease
+      - mkdir -p dist
+      - cp app/build/outputs/apk/release/*.apk dist/
+      - ls -lh dist/
+
+  upload-release:
+    image: woodpeckerci/plugin-gitea-release
+    settings:
+      api_key:
+        from_secret: gitea_token
+      base_url: https://mars.sky.net
+      files:
+        - "dist/*.apk"
+      title: "${CI_COMMIT_TAG}"
+    when:
+      event: tag

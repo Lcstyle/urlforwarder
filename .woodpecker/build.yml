@@ -1,0 +1,11 @@
+when:
+  event: [push, pull_request]
+
+steps:
+  build:
+    image: thyrlian/android-sdk:latest
+    commands:
+      - yes | sdkmanager --licenses || true
+      - sdkmanager "build-tools;36.0.0" "platforms;android-36"
+      - chmod +x gradlew
+      - ./gradlew assembleDebug
