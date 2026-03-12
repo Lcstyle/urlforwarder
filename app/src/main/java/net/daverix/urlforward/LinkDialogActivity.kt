@@ -26,11 +26,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.net.toUri
 import dagger.hilt.android.AndroidEntryPoint
+import net.daverix.urlforward.db.DefaultFilterDao
 import net.daverix.urlforward.ui.LinkDialogScreen
 import net.daverix.urlforward.ui.UrlForwarderTheme
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LinkDialogActivity : ComponentActivity() {
+
+    @Inject lateinit var filterDao: DefaultFilterDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +54,17 @@ class LinkDialogActivity : ComponentActivity() {
             Log.e("LinkDialogActivity", "No StringExtra with url in intent")
             finish()
             return
+        }
+
+        // Auto-forward if a regex filter matches
+        filterDao.queryAllRegexFilters().forEach { filter ->
+            if (url.matches(Regex(filter.regexPattern))) {
+                val result = createUrl(filter, url, subject) ?: return@forEach
+                Log.d("LinkDialogActivity", "Auto-forwarding to $result")
+                startActivity(Intent(Intent.ACTION_VIEW, result.toUri()))
+                finish()
+                return
+            }
         }
 
         setContent {
