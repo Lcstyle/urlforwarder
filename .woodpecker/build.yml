@@ -8,6 +8,30 @@ steps:
       GRADLE_OPTS: "-Xmx2g -Dorg.gradle.daemon=false"
     commands:
       - chmod +x gradlew
-      - ./gradlew assembleDebug
+      - ./gradlew assembleRelease
+      - ls -lh app/build/outputs/apk/release/
+    when:
+      - event: [push, manual]
+
+  - name: upload
+    image: alpine:3.19
+    commands:
+      - apk add --no-cache curl jq
+      - |
+        RELEASE=$(curl --fail -s -X POST \
+          "${CI_FORGE_URL}/api/v1/repos/${CI_REPO}/releases" \
+          -H "Authorization: token ${GITEA_TOKEN}" \
+          -H "Content-Type: application/json" \
+          -d "{\"tag_name\":\"build-${CI_COMMIT_SHA:0:8}\",\"name\":\"Build ${CI_COMMIT_SHA:0:8}\",\"body\":\"Automated build from commit ${CI_COMMIT_SHA:0:8}\",\"draft\":false,\"prerelease\":true}")
+        RELEASE_ID=$(echo "$RELEASE" | jq -r '.id' | tr -d '[:space:]')
+        echo "Created release ID: $RELEASE_ID"
+        for apk_file in app/build/outputs/apk/release/*.apk; do
+          BASENAME=$(basename "$apk_file")
+          curl --fail -X POST \
+            "${CI_FORGE_URL}/api/v1/repos/${CI_REPO}/releases/$RELEASE_ID/assets?name=$BASENAME" \
+            -H "Authorization: token ${GITEA_TOKEN}" \
+            -F "attachment=@$apk_file"
+          echo "Uploaded $BASENAME"
+        done
     when:
       - event: [push, manual]
