@@ -3,7 +3,7 @@ when:
 
 steps:
   build:
-    image: thyrlian/android-sdk:latest
+    image: cimg/android:2024.12.1-ndk
     commands:
       - yes | sdkmanager --licenses || true
       - sdkmanager "build-tools;36.0.0" "platforms;android-36"
