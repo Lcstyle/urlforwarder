@@ -1,11 +1,13 @@
-when:
-  event: [push, pull_request]
-
 steps:
-  build:
-    image: cimg/android:2024.12.1-ndk
+  - name: build
+    image: mars.sky.net:8418/lcstyle/flutter-android:21-jdk
+    volumes:
+      - urlforwarder-gradle:/root/.gradle
+    environment:
+      ANDROID_SDK_ROOT: /opt/android-sdk
+      GRADLE_OPTS: "-Xmx2g -Dorg.gradle.daemon=false"
     commands:
-      - yes | sdkmanager --licenses || true
-      - sdkmanager "build-tools;36.0.0" "platforms;android-36"
       - chmod +x gradlew
       - ./gradlew assembleDebug
+    when:
+      - event: [push, manual]
