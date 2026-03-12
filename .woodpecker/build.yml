@@ -5,8 +5,16 @@ steps:
       - urlforwarder-gradle:/root/.gradle
     environment:
       ANDROID_SDK_ROOT: /opt/android-sdk
+      ANDROID_KEY_FILE: /root/.gradle/key.properties
       GRADLE_OPTS: "-Xmx2g -Dorg.gradle.daemon=false"
     commands:
+      - |
+        cat > /root/.gradle/key.properties <<KEYEOF
+        storePassword=urlforwarder123
+        keyPassword=urlforwarder123
+        keyAlias=urlforwarder
+        storeFile=/root/.gradle/urlforwarder-release.jks
+        KEYEOF
       - chmod +x gradlew
       - ./gradlew assembleRelease
       - ls -lh app/build/outputs/apk/release/

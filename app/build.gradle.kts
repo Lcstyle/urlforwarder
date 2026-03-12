@@ -1,8 +1,15 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.ksp)
     alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.kotlin.compose)
+}
+
+val keyPropertiesFile = file(System.getenv("ANDROID_KEY_FILE") ?: "/dev/null")
+val keyProperties = Properties().apply {
+    if (keyPropertiesFile.exists()) load(keyPropertiesFile.inputStream())
 }
 
 android {
@@ -15,6 +22,17 @@ android {
         versionCode = 14
         versionName = "0.6.1"
         testInstrumentationRunner = "net.daverix.urlforward.UrlForwarderJunitRunner"
+    }
+
+    if (keyPropertiesFile.exists()) {
+        signingConfigs {
+            create("release") {
+                storeFile = file(keyProperties["storeFile"] as String)
+                storePassword = keyProperties["storePassword"] as String
+                keyAlias = keyProperties["keyAlias"] as String
+                keyPassword = keyProperties["keyPassword"] as String
+            }
+        }
     }
 
     splits {
@@ -31,6 +49,9 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.txt")
+            if (keyPropertiesFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
     lint {
