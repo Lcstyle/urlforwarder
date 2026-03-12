@@ -53,7 +53,7 @@ class InstantLinkActivity : ComponentActivity() {
         // regex enabled means automatic redirect allowed
         filterDao.queryAllRegexFilters().forEach { filter ->
             if (url.matches(Regex(filter.regexPattern))) {
-                val result = createUrl(filter, url, subject)
+                val result = createUrl(filter, url, subject) ?: return@forEach
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(Intent(Intent.ACTION_VIEW, result.toUri()))
                 Log.d("LinkDialogActivity", result)
