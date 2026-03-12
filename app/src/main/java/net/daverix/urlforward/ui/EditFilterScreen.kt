@@ -77,6 +77,7 @@ private fun PreviewEditFilter(
                         },
                         onUpdateTextPattern = { },
                         onUpdateSubjectPattern = { },
+                        onUpdatePriority = { },
                     )
                 }
             }
@@ -134,7 +135,8 @@ fun EditFilterScreen(
         onUpdateEncodeUrl = viewModel::updateEncoded,
         onDelete = viewModel::delete,
         onUpdateTextPattern = viewModel::updateTextPattern,
-        onUpdateSubjectPattern = viewModel::updateSubjectPattern
+        onUpdateSubjectPattern = viewModel::updateSubjectPattern,
+        onUpdatePriority = viewModel::updatePriority
     )
 }
 
@@ -153,7 +155,8 @@ private fun EditFilterScreen(
     onUpdateReplaceSubject: (String) -> Unit,
     onUpdateEncodeUrl: (Boolean) -> Unit,
     onUpdateTextPattern: (String) -> Unit,
-    onUpdateSubjectPattern: (String) -> Unit
+    onUpdateSubjectPattern: (String) -> Unit,
+    onUpdatePriority: (Int) -> Unit
 ) {
     with(LocalSharedTransitionScope.current) {
         Scaffold(
@@ -208,6 +211,7 @@ private fun EditFilterScreen(
                 },
                 onUpdateTextPattern = onUpdateTextPattern,
                 onUpdateSubjectPattern = onUpdateSubjectPattern,
+                onUpdatePriority = onUpdatePriority,
             )
 
             if (showDialog && state is SaveFilterState.Editing) {

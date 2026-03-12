@@ -29,5 +29,6 @@ object UrlForwarderContract {
         const val TEXT_PATTERN = "text_pattern"
         const val SUBJECT_PATTERN = "subject_pattern"
         const val REGEX_PATTERN = "regex_pattern"
+        const val PRIORITY = "priority"
     }
 }

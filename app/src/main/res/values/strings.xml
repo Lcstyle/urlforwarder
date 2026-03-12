@@ -16,6 +16,7 @@ For example having output name for text as @url, the pattern http://othersite.co
     </string>
     <string name="filter_url">Filter url</string>
     <string name="regex_pattern">Regex pattern</string>
+    <string name="priority">Priority (higher runs first)</string>
     <string name="replaceable_text">Replaceable text</string>
     <string name="replaceable_subject">Replaceable subject</string>
     <string name="save_filter_info">Enter an url in the filter field. Use a query string or something similar to replace the filter text with the url that is being forwarded. For example, you could create an url like <b>http://example.com/?url=@url</b> where <b>@url</b> will be replaced. In case filter url matches regex pattern, \\1 in the filter pattern will be replaced by group 1 in the regex and automatically redirect. Multiple matches trigger the first match ordered by filter name (a before z).</string>

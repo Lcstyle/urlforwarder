@@ -9,4 +9,5 @@ interface EditableFields {
     fun updateEncoded(encoded: Boolean)
     fun updateTextPattern(pattern: String)
     fun updateSubjectPattern(pattern: String)
+    fun updatePriority(priority: Int)
 }

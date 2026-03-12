@@ -61,6 +61,7 @@ private fun PreviewAddFilter(
                         onUpdateRegex = {},
                         onUpdateTextPattern = {},
                         onUpdateSubjectPattern = {},
+                        onUpdatePriority = {},
                     )
                 }
             }
@@ -107,7 +108,8 @@ fun AddFilterScreen(
         onUpdateReplaceSubject = viewModel::updateReplaceSubject,
         onUpdateEncodeUrl = viewModel::updateEncoded,
         onUpdateTextPattern = viewModel::updateTextPattern,
-        onUpdateSubjectPattern = viewModel::updateSubjectPattern
+        onUpdateSubjectPattern = viewModel::updateSubjectPattern,
+        onUpdatePriority = viewModel::updatePriority
     )
 }
 
@@ -124,7 +126,8 @@ private fun AddFilterScreen(
     onUpdateReplaceSubject: (String) -> Unit,
     onUpdateEncodeUrl: (Boolean) -> Unit,
     onUpdateTextPattern: (String) -> Unit,
-    onUpdateSubjectPattern: (String) -> Unit
+    onUpdateSubjectPattern: (String) -> Unit,
+    onUpdatePriority: (Int) -> Unit
 ) {
     with(LocalSharedTransitionScope.current) {
         Scaffold(
@@ -170,7 +173,8 @@ private fun AddFilterScreen(
                 onUpdateReplaceSubject = onUpdateReplaceSubject,
                 onUpdateEncodeUrl = onUpdateEncodeUrl,
                 onUpdateTextPattern = onUpdateTextPattern,
-                onUpdateSubjectPattern = onUpdateSubjectPattern
+                onUpdateSubjectPattern = onUpdateSubjectPattern,
+                onUpdatePriority = onUpdatePriority
             )
         }
     }
@@ -188,7 +192,8 @@ private fun AddFilterContent(
     onUpdateReplaceSubject: (String) -> Unit,
     onUpdateEncodeUrl: (Boolean) -> Unit,
     onUpdateTextPattern: (String) -> Unit,
-    onUpdateSubjectPattern: (String) -> Unit
+    onUpdateSubjectPattern: (String) -> Unit,
+    onUpdatePriority: (Int) -> Unit
 ) {
     when (state) {
         is SaveFilterState.Editing -> FilterFields(
@@ -201,7 +206,8 @@ private fun AddFilterContent(
             onUpdateReplaceSubject = onUpdateReplaceSubject,
             onUpdateEncodeUrl = onUpdateEncodeUrl,
             onUpdateTextPattern = onUpdateTextPattern,
-            onUpdateSubjectPattern = onUpdateSubjectPattern
+            onUpdateSubjectPattern = onUpdateSubjectPattern,
+            onUpdatePriority = onUpdatePriority
         )
         else -> Box(
             modifier = modifier.fillMaxSize(),

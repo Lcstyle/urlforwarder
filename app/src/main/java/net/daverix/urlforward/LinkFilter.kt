@@ -28,7 +28,8 @@ data class LinkFilter(
     val encoded: Boolean,
     val textPattern: String,
     val subjectPattern: String,
-    val regexPattern: String
+    val regexPattern: String,
+    val priority: Int = 0
 )
 
 fun createInitialAddFilter(
@@ -46,5 +47,6 @@ fun createInitialAddFilter(
     encoded = true,
     textPattern = ".*",
     subjectPattern = ".*",
-    regexPattern = ""
+    regexPattern = "",
+    priority = 0
 )

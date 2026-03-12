@@ -23,6 +23,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
 import net.daverix.urlforward.db.UrlForwarderContract.UrlFilterColumns.CREATED
 import net.daverix.urlforward.db.UrlForwarderContract.UrlFilterColumns.FILTER
+import net.daverix.urlforward.db.UrlForwarderContract.UrlFilterColumns.PRIORITY
 import net.daverix.urlforward.db.UrlForwarderContract.UrlFilterColumns.REGEX_PATTERN
 import net.daverix.urlforward.db.UrlForwarderContract.UrlFilterColumns.REPLACE_SUBJECT
 import net.daverix.urlforward.db.UrlForwarderContract.UrlFilterColumns.REPLACE_TEXT
@@ -49,6 +50,9 @@ class UrlForwardDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_
             db.execSQL("ALTER TABLE $TABLE_FILTER ADD COLUMN $SUBJECT_PATTERN TEXT DEFAULT '.*'")
             db.execSQL("ALTER TABLE $TABLE_FILTER ADD COLUMN $REGEX_PATTERN TEXT DEFAULT ''")
         }
+        if (oldVersion < 6) {
+            db.execSQL("ALTER TABLE $TABLE_FILTER ADD COLUMN $PRIORITY INTEGER DEFAULT 0")
+        }
     }
 
     fun writableTransaction(func: SQLiteDatabase.()->Unit) {
@@ -65,7 +69,7 @@ class UrlForwardDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_
 
     companion object {
         private const val DB_NAME = "UrlForward"
-        private const val DB_VERSION = 5
+        private const val DB_VERSION = 6
 
         const val TABLE_FILTER = "filter"
 
@@ -81,7 +85,8 @@ class UrlForwardDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_
                 $REPLACE_SUBJECT TEXT DEFAULT '',
                 $TEXT_PATTERN TEXT DEFAULT '.*',
                 $SUBJECT_PATTERN TEXT DEFAULT '.*',
-                $REGEX_PATTERN TEXT DEFAULT ''
+                $REGEX_PATTERN TEXT DEFAULT '',
+                $PRIORITY INTEGER DEFAULT 0
             )
             """
     }

@@ -44,6 +44,10 @@ class DefaultEditableFields(
         updateFilter { copy(subjectPattern = pattern) }
     }
 
+    override fun updatePriority(priority: Int) {
+        updateFilter { copy(priority = priority) }
+    }
+
     private fun updateFilter(func: LinkFilter.() -> LinkFilter) {
         val currentState = state.value
         if(currentState is SaveFilterState.Editing) {

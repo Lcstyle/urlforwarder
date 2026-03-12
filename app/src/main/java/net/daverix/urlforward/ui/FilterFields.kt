@@ -42,6 +42,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.daverix.urlforward.EditingState
@@ -52,6 +54,7 @@ import net.daverix.urlforward.SaveFilterState
 const val TAG_FILTER_NAME = "filterName"
 const val TAG_FILTER_URL = "filterUrl"
 const val TAG_REGEX_PATTERN = "regexPattern"
+const val TAG_PRIORITY = "priority"
 const val TAG_REPLACEABLE_TEXT = "replaceableText"
 const val TAG_REPLACEABLE_SUBJECT = "replaceableSubject"
 const val TAG_ENCODE_URL = "encodeUrl"
@@ -85,6 +88,7 @@ private fun FilterFieldsPreview() {
                 contentPadding = PaddingValues(),
                 onUpdateName = { },
                 onUpdateRegex = { },
+                onUpdatePriority = { },
                 onUpdateFilterUrl = { },
                 onUpdateReplaceText = { },
                 onUpdateReplaceSubject = { },
@@ -109,6 +113,7 @@ fun FilterFields(
     onUpdateEncodeUrl: (Boolean) -> Unit,
     onUpdateTextPattern: (String) -> Unit,
     onUpdateSubjectPattern: (String) -> Unit,
+    onUpdatePriority: (Int) -> Unit,
     modifier: Modifier = Modifier,
     filterNameTextModifier: Modifier = Modifier,
     filterUrlTextModifier: Modifier = Modifier,
@@ -144,6 +149,19 @@ fun FilterFields(
             onUpdateValue = onUpdateRegex,
             modifier = Modifier.padding(horizontal = horizontalPadding),
             textFieldModifier = Modifier.testTag(TAG_REGEX_PATTERN)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+        FilterField(
+            stringId = R.string.priority,
+            value = ((state as? SaveFilterState.Editing)?.filter?.priority ?: 0).toString(),
+            enabled = (state as? SaveFilterState.Editing)?.editingState == EditingState.EDITING,
+            onUpdateValue = { text ->
+                text.toIntOrNull()?.let { onUpdatePriority(it) }
+            },
+            modifier = Modifier.padding(horizontal = horizontalPadding),
+            textFieldModifier = Modifier.testTag(TAG_PRIORITY),
+            keyboardType = KeyboardType.Number
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -290,7 +308,8 @@ private fun FilterField(
     @StringRes stringId: Int? = null,
     onUpdateValue: (String) -> Unit,
     textFieldModifier: Modifier = Modifier,
-    textModifier: Modifier = Modifier
+    textModifier: Modifier = Modifier,
+    keyboardType: KeyboardType = KeyboardType.Text
 ) {
     Column(modifier = modifier) {
         TextField(
@@ -299,6 +318,7 @@ private fun FilterField(
             value = value,
             onValueChange = onUpdateValue,
             singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             label = stringId?.let { localStringId ->
                 {
                     Text(

@@ -109,7 +109,7 @@ class DefaultFilterDao @Inject constructor(context: Context) : FilterDao {
         arrayOf(""),
         null,
         null,
-        "${UrlForwarderContract.UrlFilterColumns.TITLE} DESC"
+        "${UrlForwarderContract.UrlFilterColumns.PRIORITY} DESC, ${UrlForwarderContract.UrlFilterColumns.TITLE} DESC"
     )?.use { cursor ->
         val items = mutableListOf<LinkFilter>()
         while (cursor.moveToNext()) {
@@ -145,7 +145,8 @@ class DefaultFilterDao @Inject constructor(context: Context) : FilterDao {
         replaceSubject = getString(7),
         textPattern = getString(8),
         subjectPattern = getString(9),
-        regexPattern = getString(10)
+        regexPattern = getString(10),
+        priority = getInt(11)
     )
 
     private fun getValues(filter: LinkFilter): ContentValues = ContentValues().apply {
@@ -159,6 +160,7 @@ class DefaultFilterDao @Inject constructor(context: Context) : FilterDao {
         put(UrlForwarderContract.UrlFilterColumns.TEXT_PATTERN, filter.textPattern)
         put(UrlForwarderContract.UrlFilterColumns.SUBJECT_PATTERN, filter.subjectPattern)
         put(UrlForwarderContract.UrlFilterColumns.REGEX_PATTERN, filter.regexPattern)
+        put(UrlForwarderContract.UrlFilterColumns.PRIORITY, filter.priority)
     }
 
     companion object {
@@ -173,7 +175,8 @@ class DefaultFilterDao @Inject constructor(context: Context) : FilterDao {
             UrlForwarderContract.UrlFilterColumns.REPLACE_SUBJECT,
             UrlForwarderContract.UrlFilterColumns.TEXT_PATTERN,
             UrlForwarderContract.UrlFilterColumns.SUBJECT_PATTERN,
-            UrlForwarderContract.UrlFilterColumns.REGEX_PATTERN
+            UrlForwarderContract.UrlFilterColumns.REGEX_PATTERN,
+            UrlForwarderContract.UrlFilterColumns.PRIORITY
         )
     }
 }
