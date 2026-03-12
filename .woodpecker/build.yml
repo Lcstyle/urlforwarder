@@ -1,3 +1,7 @@
+when:
+  - event: [push, manual]
+    branch: develop
+
 steps:
   - name: build
     image: mars.sky.net:8418/lcstyle/flutter-android:21-jdk
@@ -18,8 +22,6 @@ steps:
       - chmod +x gradlew
       - ./gradlew assembleRelease
       - ls -lh app/build/outputs/apk/release/
-    when:
-      - event: [push, manual]
 
   - name: upload
     image: alpine:3.19
@@ -41,5 +43,3 @@ steps:
             -F "attachment=@$apk_file"
           echo "Uploaded $BASENAME"
         done
-    when:
-      - event: [push, manual]
