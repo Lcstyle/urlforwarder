@@ -71,6 +71,7 @@ private fun PreviewEditFilter(
                         onUpdateReplaceText = {},
                         onUpdateFilterUrl = {},
                         onUpdateName = {},
+                        onUpdateRegex = {},
                         onDelete = {
                             editingState = EditingState.DELETING
                         },
@@ -126,6 +127,7 @@ fun EditFilterScreen(
         onSave = viewModel::save,
         onCancel = onClose,
         onUpdateName = viewModel::updateName,
+        onUpdateRegex = viewModel::updateRegex,
         onUpdateFilterUrl = viewModel::updateFilterUrl,
         onUpdateReplaceText = viewModel::updateReplaceUrl,
         onUpdateReplaceSubject = viewModel::updateReplaceSubject,
@@ -145,6 +147,7 @@ private fun EditFilterScreen(
     onSave: () -> Unit,
     onDelete: () -> Unit,
     onUpdateName: (String) -> Unit,
+    onUpdateRegex: (String) -> Unit,
     onUpdateFilterUrl: (String) -> Unit,
     onUpdateReplaceText: (String) -> Unit,
     onUpdateReplaceSubject: (String) -> Unit,
@@ -184,6 +187,7 @@ private fun EditFilterScreen(
                 state = state,
                 contentPadding = padding,
                 onUpdateName = onUpdateName,
+                onUpdateRegex = onUpdateRegex,
                 onUpdateFilterUrl = onUpdateFilterUrl,
                 onUpdateReplaceText = onUpdateReplaceText,
                 onUpdateReplaceSubject = onUpdateReplaceSubject,

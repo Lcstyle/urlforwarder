@@ -11,6 +11,18 @@
         android:theme="@style/AppTheme">
 
         <activity
+            android:name=".InstantLinkActivity"
+            android:exported="true"
+            android:label="@string/instant_filter"
+            android:theme="@style/AppDialog">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/*" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".LinkDialogActivity"
             android:exported="true"
             android:label="@string/choose_filter"

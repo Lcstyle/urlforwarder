@@ -23,6 +23,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
 import net.daverix.urlforward.db.UrlForwarderContract.UrlFilterColumns.CREATED
 import net.daverix.urlforward.db.UrlForwarderContract.UrlFilterColumns.FILTER
+import net.daverix.urlforward.db.UrlForwarderContract.UrlFilterColumns.REGEX_PATTERN
 import net.daverix.urlforward.db.UrlForwarderContract.UrlFilterColumns.REPLACE_SUBJECT
 import net.daverix.urlforward.db.UrlForwarderContract.UrlFilterColumns.REPLACE_TEXT
 import net.daverix.urlforward.db.UrlForwarderContract.UrlFilterColumns.SKIP_ENCODE
@@ -46,6 +47,7 @@ class UrlForwardDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_
         if (oldVersion < 5) {
             db.execSQL("ALTER TABLE $TABLE_FILTER ADD COLUMN $TEXT_PATTERN TEXT DEFAULT '.*'")
             db.execSQL("ALTER TABLE $TABLE_FILTER ADD COLUMN $SUBJECT_PATTERN TEXT DEFAULT '.*'")
+            db.execSQL("ALTER TABLE $TABLE_FILTER ADD COLUMN $REGEX_PATTERN TEXT DEFAULT ''")
         }
     }
 
@@ -78,7 +80,8 @@ class UrlForwardDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DB_
                 $SKIP_ENCODE INTEGER DEFAULT 0,
                 $REPLACE_SUBJECT TEXT DEFAULT '',
                 $TEXT_PATTERN TEXT DEFAULT '.*',
-                $SUBJECT_PATTERN TEXT DEFAULT '.*'
+                $SUBJECT_PATTERN TEXT DEFAULT '.*',
+                $REGEX_PATTERN TEXT DEFAULT ''
             )
             """
     }

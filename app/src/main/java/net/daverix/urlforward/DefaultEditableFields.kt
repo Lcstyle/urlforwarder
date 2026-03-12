@@ -9,6 +9,17 @@ class DefaultEditableFields(
         updateFilter { copy(name = name) }
     }
 
+    override fun updateRegex(regexPattern: String) {
+        val currentState = state.value
+        if (currentState is SaveFilterState.Editing) {
+            state.value = currentState.copy(
+                filter = currentState.filter.copy(
+                    regexPattern = regexPattern
+                )
+            )
+        }
+    }
+
     override fun updateFilterUrl(url: String) {
         updateFilter { copy(filterUrl = url) }
     }

@@ -43,9 +43,21 @@ fun createUrl(filter: LinkFilter, text: String, subject: String?): String? {
 
     val variableNameRegex = "($textVariable|$subjectVariable)([0-9]+)?".toRegex()
 
-    val outputUrl = filter.filterUrl.replace(variableNameRegex) { match ->
+    var outputUrl = filter.filterUrl.replace(variableNameRegex) { match ->
         partMatches[match.value] ?: ""
     }
+
+    // Apply regex group replacement if regexPattern is set
+    if (filter.regexPattern.isNotEmpty() && text.matches(Regex(filter.regexPattern))) {
+        val groupValues = Regex(filter.regexPattern).matchEntire(text)?.groupValues
+        if (groupValues != null && groupValues.size > 1) {
+            val groupsWithoutFullMatch = groupValues.subList(1, groupValues.size)
+            for ((index, value) in groupsWithoutFullMatch.withIndex()) {
+                outputUrl = outputUrl.replace("\\${index + 1}", value)
+            }
+        }
+    }
+
     return outputUrl
 }
 

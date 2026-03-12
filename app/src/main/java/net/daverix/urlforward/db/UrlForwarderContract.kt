@@ -28,5 +28,6 @@ object UrlForwarderContract {
         const val REPLACE_SUBJECT = "replace_subject"
         const val TEXT_PATTERN = "text_pattern"
         const val SUBJECT_PATTERN = "subject_pattern"
+        const val REGEX_PATTERN = "regex_pattern"
     }
 }

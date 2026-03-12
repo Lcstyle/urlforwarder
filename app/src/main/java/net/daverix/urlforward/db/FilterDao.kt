@@ -23,7 +23,9 @@ interface FilterDao {
     suspend fun delete(filterId: Long)
 
     fun queryFilters(): Flow<List<LinkFilter>>
+    fun queryRegexFilters(): Flow<List<LinkFilter>>
 
+    fun queryAllRegexFilters(): List<LinkFilter>
     suspend fun queryFilter(filterId: Long): LinkFilter?
 }
 
@@ -75,6 +77,15 @@ class DefaultFilterDao @Inject constructor(context: Context) : FilterDao {
         })
     }.flowOn(Dispatchers.IO)
 
+    override fun queryRegexFilters(): Flow<List<LinkFilter>> = flow {
+        emit(queryAllRegexFilters())
+
+        emitAll(updated.map {
+            queryAllRegexFilters()
+        })
+    }.flowOn(Dispatchers.IO)
+
+
     override suspend fun queryFilter(filterId: Long): LinkFilter? = withContext(Dispatchers.IO) {
         dbHelper.readableDatabase?.use {
             it.query(
@@ -90,6 +101,22 @@ class DefaultFilterDao @Inject constructor(context: Context) : FilterDao {
             }
         }
     }
+
+    override fun queryAllRegexFilters(): List<LinkFilter> = dbHelper.readableDatabase?.query(
+        UrlForwardDatabaseHelper.TABLE_FILTER,
+        COLUMNS,
+        "${UrlForwarderContract.UrlFilterColumns.REGEX_PATTERN} != ?",
+        arrayOf(""),
+        null,
+        null,
+        "${UrlForwarderContract.UrlFilterColumns.TITLE} DESC"
+    )?.use { cursor ->
+        val items = mutableListOf<LinkFilter>()
+        while (cursor.moveToNext()) {
+            items += cursor.toFilter()
+        }
+        items
+    } ?: emptyList()
 
     private fun queryAllFilters(): List<LinkFilter> = dbHelper.readableDatabase?.query(
         UrlForwardDatabaseHelper.TABLE_FILTER,
@@ -117,7 +144,8 @@ class DefaultFilterDao @Inject constructor(context: Context) : FilterDao {
         encoded = getShort(6).toInt() != 1,
         replaceSubject = getString(7),
         textPattern = getString(8),
-        subjectPattern = getString(9)
+        subjectPattern = getString(9),
+        regexPattern = getString(10)
     )
 
     private fun getValues(filter: LinkFilter): ContentValues = ContentValues().apply {
@@ -130,6 +158,7 @@ class DefaultFilterDao @Inject constructor(context: Context) : FilterDao {
         put(UrlForwarderContract.UrlFilterColumns.REPLACE_SUBJECT, filter.replaceSubject)
         put(UrlForwarderContract.UrlFilterColumns.TEXT_PATTERN, filter.textPattern)
         put(UrlForwarderContract.UrlFilterColumns.SUBJECT_PATTERN, filter.subjectPattern)
+        put(UrlForwarderContract.UrlFilterColumns.REGEX_PATTERN, filter.regexPattern)
     }
 
     companion object {
@@ -143,7 +172,8 @@ class DefaultFilterDao @Inject constructor(context: Context) : FilterDao {
             UrlForwarderContract.UrlFilterColumns.SKIP_ENCODE,
             UrlForwarderContract.UrlFilterColumns.REPLACE_SUBJECT,
             UrlForwarderContract.UrlFilterColumns.TEXT_PATTERN,
-            UrlForwarderContract.UrlFilterColumns.SUBJECT_PATTERN
+            UrlForwarderContract.UrlFilterColumns.SUBJECT_PATTERN,
+            UrlForwarderContract.UrlFilterColumns.REGEX_PATTERN
         )
     }
 }

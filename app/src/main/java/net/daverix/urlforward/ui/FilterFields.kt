@@ -51,6 +51,7 @@ import net.daverix.urlforward.SaveFilterState
 
 const val TAG_FILTER_NAME = "filterName"
 const val TAG_FILTER_URL = "filterUrl"
+const val TAG_REGEX_PATTERN = "regexPattern"
 const val TAG_REPLACEABLE_TEXT = "replaceableText"
 const val TAG_REPLACEABLE_SUBJECT = "replaceableSubject"
 const val TAG_ENCODE_URL = "encodeUrl"
@@ -76,12 +77,14 @@ private fun FilterFieldsPreview() {
                         updated = 0L,
                         encoded = false,
                         textPattern = "https://myawesomefilter.com/(.*)",
-                        subjectPattern = ".*"
+                        subjectPattern = ".*",
+                        regexPattern = ""
                     ),
                     editingState = EditingState.EDITING
                 ),
                 contentPadding = PaddingValues(),
                 onUpdateName = { },
+                onUpdateRegex = { },
                 onUpdateFilterUrl = { },
                 onUpdateReplaceText = { },
                 onUpdateReplaceSubject = { },
@@ -99,6 +102,7 @@ fun FilterFields(
     state: SaveFilterState,
     contentPadding: PaddingValues,
     onUpdateName: (String) -> Unit,
+    onUpdateRegex: (String) -> Unit,
     onUpdateFilterUrl: (String) -> Unit,
     onUpdateReplaceText: (String) -> Unit,
     onUpdateReplaceSubject: (String) -> Unit,
@@ -130,6 +134,16 @@ fun FilterFields(
             onUpdateValue = onUpdateName,
             textFieldModifier = filterNameTextModifier.testTag(TAG_FILTER_NAME),
             modifier = Modifier.padding(horizontal = horizontalPadding),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+        FilterField(
+            stringId = R.string.regex_pattern,
+            value = (state as? SaveFilterState.Editing)?.filter?.regexPattern ?: "",
+            enabled = (state as? SaveFilterState.Editing)?.editingState == EditingState.EDITING,
+            onUpdateValue = onUpdateRegex,
+            modifier = Modifier.padding(horizontal = horizontalPadding),
+            textFieldModifier = Modifier.testTag(TAG_REGEX_PATTERN)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -247,6 +261,7 @@ fun FilterFields(
             modifier = Modifier.padding(horizontal = 16.dp),
             style = MaterialTheme.typography.body1
         )
+
 
         footerContent?.let {
             Spacer(modifier = Modifier.height(16.dp))
